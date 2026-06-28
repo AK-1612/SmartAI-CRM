@@ -1,128 +1,174 @@
 # SmartAI CRM
 
-SmartAI CRM is an AI-powered customer relationship management platform designed to help businesses manage leads, customers, sales pipelines, marketing campaigns, support tickets, workflows, documents, and communication from one place.
+SmartAI CRM is an enterprise-grade AI-powered Customer Relationship Management platform scaffold. The repository is organized for a modular Django REST Framework backend, a React + TypeScript + Tailwind CSS frontend, PostgreSQL persistence, AI service workspaces, and Docker-based local development.
 
-The system is inspired by modern CRM platforms such as Zoho CRM, with an added focus on intelligent automation, predictive analytics, and generative AI assistance for sales, marketing, and customer support teams.
-
-## Overview
-
-SmartAI CRM brings core CRM operations and AI-driven decision support into a unified platform. It is intended for teams that need to track customer relationships, automate follow-ups, prioritize high-value opportunities, generate reports, and improve customer engagement using data-backed insights.
-
-Key goals:
-
-- Centralize lead, customer, sales, support, and communication data.
-- Automate repetitive CRM workflows across sales, marketing, and service operations.
-- Use AI to score leads, forecast revenue, recommend next actions, and analyze customer behavior.
-- Provide real-time dashboards for sales performance, campaign results, customer engagement, and team productivity.
-- Support third-party integrations for email, messaging, payments, productivity tools, and cloud services.
-
-## Features
-
-### CRM Operations
-
-- User, role, department, and permission management.
-- Lead capture, assignment, scoring, status tracking, import, and export.
-- Contact management with customer history, communication logs, attachments, and segmentation.
-- Sales pipeline management for deals, opportunities, sales stages, quotes, proposals, and forecasts.
-- Task management with reminders, meeting scheduling, calendar integration, and notifications.
-- Customer support workflows for tickets, complaints, SLA tracking, knowledge base content, and chat support.
-- Document management for contracts, proposals, e-signatures, versions, and cloud storage.
-
-### AI Automation
-
-- Lead conversion probability prediction.
-- Automated lead qualification and prioritization.
-- Customer behavior analysis and engagement scoring.
-- Sales forecasting and deal closure prediction.
-- Campaign performance prediction and audience targeting recommendations.
-- AI-generated emails, proposals, meeting notes, sales pitches, and customer responses.
-- Ticket categorization, sentiment analysis, and suggested support replies.
-- Smart task recommendations and meeting summaries.
-
-### Workflow and Communication
-
-- Drag-and-drop workflow automation builder.
-- Trigger-based email, SMS, approval, escalation, and onboarding workflows.
-- AI virtual CRM assistant with natural language and voice query support.
-- Email, WhatsApp, SMS, call log, and video meeting integrations.
-
-### Analytics
-
-- Real-time business dashboards.
-- Sales and revenue reports.
-- Lead conversion analytics.
-- Employee performance tracking.
-- Predictive analytics, trend forecasting, and business growth recommendations.
+This repository intentionally contains scaffold code only. Business logic, database models, API contracts, and AI models are left as TODOs for future implementation.
 
 ## Tech Stack
 
-This project is designed around the following recommended stack:
-
-| Layer | Technology |
+| Area | Technology |
 | --- | --- |
-| Frontend | React.js or Next.js, TypeScript, Tailwind CSS |
-| Backend | Node.js, Express.js |
-| AI Services | Python, OpenAI API, TensorFlow, Scikit-learn, LangChain |
-| Database | PostgreSQL, MongoDB |
-| Vector Search | Pinecone or Weaviate |
-| Cloud | AWS, Azure, or Google Cloud |
+| Frontend | React, TypeScript, Tailwind CSS, React Router, Axios, React Query |
+| Backend | Django, Django REST Framework, Simple JWT |
+| Database | PostgreSQL |
+| AI Workspace | OpenAI API, LangChain, Scikit-learn, TensorFlow, FAISS |
+| Infrastructure | Docker, Docker Compose, Nginx, GitHub Actions |
 
-## Integrations
+## Repository Structure
 
-Planned integrations include:
+```text
+smart-ai-crm/
+├── frontend/        # React + TypeScript + Tailwind application
+├── backend/         # Django REST Framework project and CRM apps
+├── ai/              # AI assistant, scoring, forecasting, embeddings, and training workspace
+├── database/        # Schema, migration notes, seed data, backups, and ERD docs
+├── docs/            # Architecture, API, deployment, database, and module design docs
+├── deployment/      # Nginx and deployment configuration
+├── tests/           # Cross-cutting backend, frontend, API, and AI test planning
+├── .github/         # CI workflows
+├── docker-compose.yml
+├── requirements.txt
+├── package.json
+├── .env.example
+└── LICENSE
+```
 
-- Google Workspace.
-- Microsoft 365.
-- WhatsApp Business Platform.
-- Twilio.
-- Stripe.
-- Razorpay.
+## Backend Modules
 
-## Enterprise Scope
+The backend follows the architecture's module boundaries. Each app contains placeholder files for `urls`, `views`, `serializers`, `services`, `repositories`, `models`, and `tests`.
 
-The platform can be extended with enterprise-grade capabilities such as:
+- `authentication`
+- `users`
+- `leads`
+- `contacts`
+- `sales`
+- `marketing`
+- `support`
+- `tasks`
+- `workflow`
+- `assistant`
+- `analytics`
+- `documents`
+- `communication`
+- `notifications`
 
-- Multi-tenant CRM support.
-- White-label deployments.
-- Android and iOS mobile applications.
-- AI voice calling assistant.
-- Customer 360-degree view.
-- Business intelligence dashboards.
-- ERP, HRMS, and inventory management integrations.
+Business logic should be implemented in each module's service layer. Views should remain thin, and repositories should own data-access helpers when needed.
 
-## Project Status
+## Frontend Modules
 
-This repository currently contains the project brief and license. Application source code, installation steps, environment variables, API documentation, database schema, and deployment instructions will be added as development progresses.
+The frontend includes route-level placeholders for every feature area:
+
+- Authentication
+- User Management
+- Lead Management
+- Contact Management
+- Sales Pipeline
+- Marketing Automation
+- Customer Support
+- Task Management
+- Workflow Engine
+- AI Assistant
+- Analytics
+- Document Management
+- Communication Hub
+- Notifications
 
 ## Getting Started
 
-The implementation has not been committed yet. Once the application code is available, this section should include:
+### 1. Create Environment File
 
 ```bash
-# Install dependencies
-npm install
-
-# Configure environment variables
 cp .env.example .env
+```
 
-# Start the development server
+Update `.env` with local secrets and credentials as needed.
+
+### 2. Run with Docker Compose
+
+```bash
+docker compose up --build
+```
+
+Services:
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:8000`
+- PostgreSQL: `localhost:5432`
+
+### 3. Run Database Migrations
+
+In a separate terminal:
+
+```bash
+docker compose exec backend python manage.py migrate
+```
+
+## Local Development Without Docker
+
+### Backend
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cd backend
+python manage.py migrate
+python manage.py runserver
+```
+
+The backend expects PostgreSQL connection values from `.env` or the shell environment.
+
+### Frontend
+
+```bash
+cd frontend
+npm install
 npm run dev
 ```
 
-The final commands may change based on the selected application structure.
+## API Routing
 
-## Roadmap
+The root Django URL configuration reserves the architecture-defined API namespaces:
 
-- UI/UX design for dashboard, CRM modules, workflow builder, and role-based screens.
-- Core CRM development for authentication, users, leads, contacts, deals, support, tasks, documents, and communication.
-- AI module development for scoring, forecasting, churn prediction, assistant features, and generative content.
-- Third-party integrations for email, SMS, WhatsApp, calendar, payment, e-signature, and cloud storage services.
-- Testing, security validation, deployment, and production monitoring.
+```text
+/api/auth/
+/api/users/
+/api/leads/
+/api/contacts/
+/api/sales/
+/api/marketing/
+/api/support/
+/api/tasks/
+/api/workflow/
+/api/assistant/
+/api/analytics/
+/api/documents/
+/api/communication/
+/api/notifications/
+```
 
-## Security and Data Protection
+Endpoint implementations are intentionally omitted until API contracts are designed.
 
-SmartAI CRM is expected to handle sensitive business and customer data. Development should include strong access control, secure credential handling, audit-friendly activity tracking, confidential data protection, breach reporting processes, and compliant data retention or deletion workflows.
+## Development Rules
+
+- Keep modules independent.
+- Put business logic in service-layer files.
+- Keep DRF views thin.
+- Add database models only after domain design is complete.
+- Do not add AI model code without requirements, data definitions, and evaluation criteria.
+- Add tests with each implemented feature.
+
+## Project Status
+
+Current status: scaffold complete.
+
+Next implementation steps:
+
+1. Finalize domain models and API contracts per module.
+2. Add authentication and RBAC design.
+3. Implement one module at a time behind tests.
+4. Add API documentation and module design documents under `docs/`.
 
 ## License
 
-This project is licensed under the Apache License 2.0. See [LICENSE](/Users/anshulk/Downloads/SmartAI-CRM/LICENSE) for details.
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
