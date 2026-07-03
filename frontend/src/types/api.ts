@@ -218,3 +218,59 @@ export type GrowthRecommendation = {
   message: string;
 };
 
+// ---- Lead Management ----
+export type LeadStatus = "NEW" | "CONTACTED" | "QUALIFIED" | "CONVERTED" | "LOST";
+
+export type Lead = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  company: string;
+  status: LeadStatus;
+  source: string;
+  score: number;
+  conversion_probability: number;
+  ai_insights: string;
+  assigned_to: number | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type LeadInteraction = {
+  id: number;
+  lead: number;
+  interaction_type: "EMAIL" | "CALL" | "MEETING" | "NOTE";
+  notes: string;
+  date: string;
+  created_by: number | null;
+};
+
+// ---- Communication Hub ----
+export type CommunicationChannel = "EMAIL" | "SMS" | "WHATSAPP" | "CALL";
+export type CommunicationDirection = "INBOUND" | "OUTBOUND";
+export type CommunicationStatus = "PENDING" | "SENT" | "DELIVERED" | "FAILED";
+
+export type CommunicationLog = {
+  id: number;
+  lead: number | null;
+  recipient: string;
+  channel: CommunicationChannel;
+  direction: CommunicationDirection;
+  subject: string;
+  content: string;
+  status: CommunicationStatus;
+  error_message: string;
+  sent_by: number | null;
+  timestamp: string;
+};
+
+export type MessageTemplate = {
+  id: number;
+  name: string;
+  channel: CommunicationChannel;
+  subject_template: string;
+  body_template: string;
+};
+

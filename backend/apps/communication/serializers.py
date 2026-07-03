@@ -1,3 +1,13 @@
-"""Communication hub serializers."""
+from rest_framework import serializers
+from apps.communication.models import CommunicationLog, MessageTemplate
 
-# TODO: Add serializers for email, SMS, WhatsApp, call, and meeting payloads.
+class CommunicationLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommunicationLog
+        fields = '__all__'
+        read_only_fields = ('status', 'error_message', 'sent_by', 'timestamp')
+
+class MessageTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MessageTemplate
+        fields = '__all__'

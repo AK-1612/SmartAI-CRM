@@ -1,7 +1,11 @@
-"""Communication hub API routes."""
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from apps.communication.views import CommunicationLogViewSet, MessageTemplateViewSet
 
-app_name = "communication"
+router = DefaultRouter()
+router.register(r'logs', CommunicationLogViewSet)
+router.register(r'templates', MessageTemplateViewSet)
 
 urlpatterns = [
-    # TODO: Add email, SMS, WhatsApp, call log, and meeting integration endpoints.
+    path('', include(router.urls)),
 ]

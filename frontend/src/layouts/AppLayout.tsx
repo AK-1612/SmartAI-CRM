@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import AssistantChatWidget from "../modules/assistant/AssistantChatWidget";
 
 const navigationItems = [
   { label: "Dashboard", to: "/" },
@@ -46,6 +47,7 @@ export default function AppLayout() {
         <div className="mx-auto max-w-6xl px-5 py-8">
           <Outlet />
         </div>
+        <AssistantChatWidget />
       </main>
     </div>
   );

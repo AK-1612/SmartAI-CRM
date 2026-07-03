@@ -1,7 +1,11 @@
-"""Lead management API routes."""
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from apps.leads.views import LeadViewSet, LeadInteractionViewSet
 
-app_name = "leads"
+router = DefaultRouter()
+router.register(r'leads', LeadViewSet)
+router.register(r'interactions', LeadInteractionViewSet)
 
 urlpatterns = [
-    # TODO: Add lead CRUD, assignment, source, follow-up, and scoring endpoints.
+    path('', include(router.urls)),
 ]

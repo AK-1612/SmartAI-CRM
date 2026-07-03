@@ -1,7 +1,6 @@
-"""AI assistant API routes."""
-
-app_name = "assistant"
+from django.urls import path
+from apps.assistant.views import AssistantChatView
 
 urlpatterns = [
-    # TODO: Add natural language query, report generation, search, and insight endpoints.
+    path('chat/', AssistantChatView.as_view(), name='assistant-chat'),
 ]
