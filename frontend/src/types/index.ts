@@ -1,0 +1,10 @@
+export type Contact={id:string;customer_id:string;full_name:string;company?:string|null;email:string;phone?:string|null;alternate_phone?:string|null;address?:string|null;city?:string|null;state?:string|null;country?:string|null;industry?:string|null;customer_source?:string|null;assigned_employee_id?:string|null;status:string;segment?:string;tags:string[];total_revenue:number;created_at:string;updated_at:string};
+export type ContactInput={full_name:string;company?:string|null;email:string;phone?:string|null;alternate_phone?:string|null;address?:string|null;city?:string|null;state?:string|null;country?:string|null;industry?:string|null;customer_source?:string|null;assigned_employee_id?:string|null;status:string;tags:string[];total_revenue:number};
+export type ContactPage={items:Contact[];total:number;page:number;page_size:number;pages:number};
+export type ContactQuery={page:number;page_size:number;search?:string;status?:string;industry?:string;city?:string;source?:string;sort_by?:string;sort_order?:'asc'|'desc'};
+export type Activity={id:string;contact_id:string;type:'call'|'email'|'meeting'|'task'|'note';subject?:string|null;body?:string|null;sender?:string|null;receiver?:string|null;duration_seconds?:number|null;scheduled_at?:string|null;created_at:string};
+export type ActivityInput=Omit<Activity,'id'|'created_at'>;
+export type ChartDatum={name:string;value:number};
+export type DashboardData={total_contacts?:number;total_revenue?:number;activities?:number;new_leads?:number;active_customers?:number;follow_ups_today?:number;high_risk_customers?:number;by_status?:ChartDatum[];by_industry?:ChartDatum[];by_source?:ChartDatum[];revenue_by_month?:ChartDatum[]};
+export type AIFeatures={total_calls:number;total_emails:number;email_opens:number;email_replies:number;meetings_done:number;purchase_count:number;total_revenue:number;support_tickets:number;website_visits:number;days_since_last_contact:number};
+export type AIResult=Record<string,unknown>&{engagement_level?:string;engagement_score?:number;probability?:number;recommendations?:string[];top_features?:{feature:string;value:number}[]};

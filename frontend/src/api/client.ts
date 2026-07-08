@@ -1,0 +1,6 @@
+import axios,{AxiosError,InternalAxiosRequestConfig} from 'axios';
+const API_ROOT='http://127.0.0.1:8000/api';
+export const client=axios.create({baseURL:API_ROOT,timeout:15000});
+client.interceptors.request.use((config:InternalAxiosRequestConfig)=>{const token=localStorage.getItem('access_token');if(token)config.headers.Authorization=`Bearer ${token}`;return config});
+let refreshing:Promise<string>|null=null;
+client.interceptors.response.use(r=>r,async(error:AxiosError)=>{const request=error.config as (InternalAxiosRequestConfig&{_retry?:boolean})|undefined;if(error.response?.status!==401||!request||request._retry||request.url?.includes('/auth/'))return Promise.reject(error);const refresh=localStorage.getItem('refresh_token');if(!refresh){localStorage.clear();location.href='/login';return Promise.reject(error)}request._retry=true;try{refreshing??=axios.post(`${API_ROOT}/auth/refresh`,{refresh_token:refresh}).then(({data})=>{localStorage.setItem('access_token',data.access_token);if(data.refresh_token)localStorage.setItem('refresh_token',data.refresh_token);return data.access_token}).finally(()=>{refreshing=null});const token=await refreshing;request.headers.Authorization=`Bearer ${token}`;return client(request)}catch(refreshError){localStorage.clear();location.href='/login';return Promise.reject(refreshError)}});
