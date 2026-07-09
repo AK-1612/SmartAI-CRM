@@ -74,16 +74,26 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "smart_ai_crm"),
-        "USER": os.getenv("POSTGRES_USER", "smart_ai_crm"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "smart_ai_crm"),
-        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+db_url = os.getenv("DATABASE_URL", "")
+if db_url.startswith("sqlite") or not os.getenv("POSTGRES_HOST"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "crm.db",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("POSTGRES_DB", "smart_ai_crm"),
+            "USER": os.getenv("POSTGRES_USER", "smart_ai_crm"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD", "smart_ai_crm"),
+            "HOST": os.getenv("POSTGRES_HOST", "localhost"),
+            "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        }
+    }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -106,6 +116,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "config.django_auth.FastAPIJWTAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
@@ -123,7 +134,11 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(
         days=int(os.getenv("JWT_REFRESH_TOKEN_DAYS", "7"))
     ),
+    "SIGNING_KEY": os.getenv("SECRET_KEY", "change-me-in-production"),
+    "USER_ID_CLAIM": "sub",
 }
+
+
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()

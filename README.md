@@ -81,7 +81,7 @@ The frontend includes route-level placeholders for every feature area:
 cp .env.example .env
 ```
 
-Update `.env` with local secrets and credentials as needed.
+Update `.env` with local secrets and credentials as needed. Make sure to specify `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD` values.
 
 ### 2. Run with Docker Compose
 
@@ -91,34 +91,53 @@ docker compose up --build
 
 Services:
 
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:8000`
-- PostgreSQL: `localhost:5432`
+- **Frontend**: `http://localhost:5173` (React application)
+- **Backend (FastAPI + Django)**: `http://localhost:8000` (FastAPI handles core routes; Django mounts as a fallback handler under `/` to serve the rest of the endpoints)
+- **PostgreSQL**: `localhost:5432` (Shared database)
 
 ### 3. Run Database Migrations
 
-In a separate terminal:
-
+For Django migrations:
 ```bash
 docker compose exec backend python manage.py migrate
 ```
 
-## Local Development Without Docker
-
-### Backend
-
+For SQLAlchemy/FastAPI migrations (Alembic):
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cd backend
-python manage.py migrate
-python manage.py runserver
+docker compose exec backend alembic upgrade head
 ```
 
-The backend expects PostgreSQL connection values from `.env` or the shell environment.
+---
 
-### Frontend
+## Local Development Without Docker
+
+### Unified Backend (FastAPI + Django)
+
+1. Activate your virtual environment and install the dependencies:
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r backend/requirements.txt
+```
+
+2. Run the database migrations:
+```bash
+# Django Migrations
+python backend/manage.py migrate
+
+# Alembic Migrations
+cd backend && alembic upgrade head
+```
+
+3. Start the unified FastAPI + Django application:
+```bash
+cd backend
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+*Note: FastAPI handles contacts, deals, campaigns, notifications, and auth endpoints. Unmatched endpoints fall back to the Django WSGI layer (e.g. leads, workflow, support, analytics, assistant, communication).*
+
+### React Frontend
 
 ```bash
 cd frontend
@@ -126,49 +145,33 @@ npm install
 npm run dev
 ```
 
-## API Routing
+---
 
-The root Django URL configuration reserves the architecture-defined API namespaces:
+## 🧪 Testing the Application
 
-```text
-/api/auth/
-/api/users/
-/api/leads/
-/api/contacts/
-/api/sales/
-/api/marketing/
-/api/support/
-/api/tasks/
-/api/workflow/
-/api/assistant/
-/api/analytics/
-/api/documents/
-/api/communication/
-/api/notifications/
+The CRM has test configurations for both backend frameworks:
+
+### 1. Testing Django Apps
+To run unit and integration tests for the Django modules (Leads, Assistant, Communication, Workflow, Support, Analytics):
+```bash
+python backend/manage.py test
 ```
 
-Endpoint implementations are intentionally omitted until API contracts are designed.
+### 2. Testing FastAPI Router
+To run tests for the FastAPI router (Auth, Contacts, Activities, Documents, Dashboard, Deals, Campaigns, Notifications):
+```bash
+cd backend
+pytest
+```
 
-## Development Rules
-
-- Keep modules independent.
-- Put business logic in service-layer files.
-- Keep DRF views thin.
-- Add database models only after domain design is complete.
-- Do not add AI model code without requirements, data definitions, and evaluation criteria.
-- Add tests with each implemented feature.
+---
 
 ## Project Status
 
-Current status: scaffold complete.
-
-Next implementation steps:
-
-1. Finalize domain models and API contracts per module.
-2. Add authentication and RBAC design.
-3. Implement one module at a time behind tests.
-4. Add API documentation and module design documents under `docs/`.
+Current status: **Core Modules and Integrations Complete**. 
+The main branch contains all implemented backend routers, unified layout menus, and floating AI speech assistant capabilities.
 
 ## License
 
 This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+

@@ -48,6 +48,8 @@ class Contact(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     activities: Mapped[list["Activity"]] = relationship(back_populates="contact", cascade="all, delete-orphan")
     documents: Mapped[list["Document"]] = relationship(back_populates="contact", cascade="all, delete-orphan")
+    deals: Mapped[list["Deal"]] = relationship(back_populates="contact", cascade="all, delete-orphan")
+
 
 
 class Activity(Base):
@@ -97,3 +99,38 @@ class EngagementScore(Base):
     top_features: Mapped[str | None] = mapped_column(Text)
     recommendations: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class Deal(Base):
+    __tablename__ = "deals"
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    contact_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("contacts.id", ondelete="CASCADE"), index=True)
+    name: Mapped[str] = mapped_column(String(255))
+    stage: Mapped[str] = mapped_column(String(40), default="Prospecting")
+    value: Mapped[float] = mapped_column(Float, default=0.0)
+    close_date: Mapped[date] = mapped_column(Date)
+    status: Mapped[str] = mapped_column(String(20), default="Open")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    contact: Mapped[Contact] = relationship(back_populates="deals")
+
+# Add deals relationship to Contact class dynamically or in the Contact definition.
+# Wait, let's make sure Contact can reference deals. We'll add dynamic back_populates.
+
+
+class Campaign(Base):
+    __tablename__ = "campaigns"
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(255))
+    channel: Mapped[str] = mapped_column(String(20), default="Email") # Email, SMS, WhatsApp
+    status: Mapped[str] = mapped_column(String(20), default="Draft") # Draft, Scheduled, Active, Completed
+    subject: Mapped[str | None] = mapped_column(String(255))
+    content: Mapped[str | None] = mapped_column(Text)
+    target_segment: Mapped[str | None] = mapped_column(String(100))
+    sent_count: Mapped[int] = mapped_column(Integer, default=0)
+    open_count: Mapped[int] = mapped_column(Integer, default=0)
+    click_count: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
