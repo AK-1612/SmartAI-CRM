@@ -20,6 +20,7 @@ import UsersPage from './modules/users/UsersPage';
 import NotificationsPage from './modules/notifications/NotificationsPage';
 import SalesPage from './modules/sales/SalesPage';
 import MarketingPage from './modules/marketing/MarketingPage';
+import BillingPage from './modules/billing/BillingPage';
 
 const Guard=({children}:{children:React.ReactNode})=>localStorage.getItem('access_token')?children:<Navigate to="/login"/>;
 
@@ -47,6 +48,7 @@ export default function App(){
         <Route path="notifications" element={<NotificationsPage/>}/>
         <Route path="sales" element={<SalesPage/>}/>
         <Route path="marketing" element={<MarketingPage/>}/>
+        <Route path="billing" element={<BillingPage/>}/>
         
         <Route path="*" element={<Navigate to="/" replace/>}/>
       </Route>
